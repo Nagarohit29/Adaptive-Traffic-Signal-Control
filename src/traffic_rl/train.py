@@ -63,7 +63,7 @@ def train(
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Train a traffic signal agent.")
-    parser.add_argument("--agent", choices=sorted(AGENTS), default="q_learning")
+    parser.add_argument("--agent", choices=[*sorted(AGENTS), "dqn"], default="q_learning")
     parser.add_argument("--config", type=Path, help="defaults to configs/<agent>.yaml")
     parser.add_argument("--episodes", type=int, help="overrides the config episode count")
     parser.add_argument("--output", type=Path, default=Path("results"))
@@ -71,7 +71,13 @@ def main(argv: list[str] | None = None) -> None:
     if args.episodes is not None and args.episodes <= 0:
         parser.error("--episodes must be positive")
     config = load_config(args.config or Path("configs") / f"{args.agent}.yaml")
-    print(f"saved {train(args.agent, config, args.output, args.episodes)}")
+    if args.agent == "dqn":
+        from traffic_rl.agents.dqn import train_dqn
+
+        model_path = train_dqn(config, args.output, args.episodes)
+    else:
+        model_path = train(args.agent, config, args.output, args.episodes)
+    print(f"saved {model_path}")
 
 
 if __name__ == "__main__":

@@ -1,11 +1,34 @@
 from collections.abc import Callable
-from typing import Protocol
+from typing import Any, Protocol
 
 from traffic_rl.envs.base_env import Observation, TrafficSignalEnv
 
 METRIC_KEYS = ("return", "avg_wait", "avg_queue", "throughput", "switches")
 
 Transition = Callable[[Observation, int, float, Observation, int, bool], None]
+
+
+class EpisodeTally:
+    def __init__(self) -> None:
+        self.episode_return = 0.0
+        self.arrivals = self.departures = self.queue_seconds = self.switches = self.sim_time = 0
+
+    def add(self, reward: float, info: dict[str, Any]) -> None:
+        self.episode_return += reward
+        self.arrivals += info["arrivals"]
+        self.departures += info["departures"]
+        self.queue_seconds += info["queue_seconds"]
+        self.switches += info["switched"]
+        self.sim_time = info["sim_time"]
+
+    def metrics(self) -> dict[str, float]:
+        return {
+            "return": self.episode_return,
+            "avg_wait": self.queue_seconds / max(self.arrivals, 1),
+            "avg_queue": self.queue_seconds / max(self.sim_time, 1),
+            "throughput": float(self.departures),
+            "switches": float(self.switches),
+        }
 
 
 class Controller(Protocol):
@@ -24,8 +47,7 @@ def run_episode(
     obs, _ = env.reset(seed=seed)
     controller.reset()
     action = controller.act(obs, greedy)
-    episode_return = 0.0
-    arrivals = departures = queue_seconds = switches = sim_time = 0
+    tally = EpisodeTally()
     done = False
     while not done:
         next_obs, reward, terminated, truncated, info = env.step(action)
@@ -33,17 +55,6 @@ def run_episode(
         if on_transition is not None:
             on_transition(obs, action, float(reward), next_obs, next_action, terminated)
         obs, action = next_obs, next_action
-        episode_return += float(reward)
-        arrivals += info["arrivals"]
-        departures += info["departures"]
-        queue_seconds += info["queue_seconds"]
-        switches += info["switched"]
-        sim_time = info["sim_time"]
+        tally.add(float(reward), info)
         done = terminated or truncated
-    return {
-        "return": episode_return,
-        "avg_wait": queue_seconds / max(arrivals, 1),
-        "avg_queue": queue_seconds / max(sim_time, 1),
-        "throughput": float(departures),
-        "switches": float(switches),
-    }
+    return tally.metrics()
