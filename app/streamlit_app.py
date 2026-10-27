@@ -7,15 +7,16 @@ sys.path.insert(0, str(ROOT / "src"))
 import streamlit as st
 
 from traffic_rl.agents.q_learning import QLearningAgent
-from traffic_rl.baselines.fixed_timer import FixedTimer
+from traffic_rl.baselines.fixed_timer import FixedTimer, tuned_timer
 from traffic_rl.envs.simple_env import DEFAULT_DEMAND, Demand, SimpleEnvConfig, SimpleTrafficEnv
 from traffic_rl.episode import Controller, run_episode
 
 MODEL_PATH = ROOT / "results" / "models" / "q_learning.npz"
+TUNED_LABEL, TUNED_TIMER = tuned_timer(ROOT / "results" / "evaluation.csv")
 CONTROLLERS = {
     "Q-learning": lambda: QLearningAgent.load(MODEL_PATH),
-    "Fixed timer 30/30": lambda: FixedTimer(30, 30),
-    "Fixed timer 15/15": lambda: FixedTimer(15, 15),
+    TUNED_LABEL: lambda: TUNED_TIMER,
+    "Fixed timer 30/30 s": lambda: FixedTimer(30, 30),
 }
 MAX_RATE = 0.25
 MAX_SEED = 999
@@ -42,8 +43,9 @@ st.set_page_config(page_title="Adaptive traffic signal demo")
 st.title("Adaptive traffic signal control")
 st.write(
     "One simulated hour at a four-way intersection, run three times with the same random "
-    "arrivals: once with the trained Q-learning agent and once each with a fixed timer giving "
-    "30 s and 15 s of green per direction. Set the arrival rate for each direction in each "
+    "arrivals: once with the trained Q-learning agent, once with the fixed timer tuned on "
+    f"training traffic ({TUNED_TIMER.green_ns}/{TUNED_TIMER.green_ew} s of green), and once "
+    "with a default 30/30 s timer. Set the arrival rate for each direction in each "
     "20-minute window below. The agent was trained only on the default demand, so settings "
     "far from the defaults are outside what it has seen, and it may do worse than a fixed "
     "timer there."

@@ -3,8 +3,8 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from traffic_rl.baselines.fixed_timer import FixedTimer
-from traffic_rl.demo import demand_windows, trace_episode, tuned_timer
+from traffic_rl.baselines.fixed_timer import FixedTimer, tuned_timer
+from traffic_rl.demo import demand_windows, trace_episode
 from traffic_rl.envs.simple_env import DEFAULT_DEMAND, SimpleEnvConfig, SimpleTrafficEnv
 from traffic_rl.episode import run_episode
 from traffic_rl.utils.logging_utils import write_rows

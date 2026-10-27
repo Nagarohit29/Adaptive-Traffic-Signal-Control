@@ -1,10 +1,9 @@
 import argparse
-import csv
 from pathlib import Path
 
 import numpy as np
 
-from traffic_rl.baselines.fixed_timer import FixedTimer
+from traffic_rl.baselines.fixed_timer import tuned_timer
 from traffic_rl.envs.base_env import GREEN_APPROACHES
 from traffic_rl.envs.simple_env import Demand, SimpleTrafficEnv
 from traffic_rl.episode import Controller, run_episode
@@ -21,15 +20,6 @@ def trace_episode(env: SimpleTrafficEnv, controller: Controller, seed: int) -> l
 
     run_episode(env, controller, seed, on_transition=record)
     return snapshots
-
-
-def tuned_timer(evaluation: Path) -> tuple[str, FixedTimer]:
-    with evaluation.open(newline="") as handle:
-        rows = [row for row in csv.DictReader(handle) if row["controller"] == "fixed_tuned"]
-    if not rows:
-        raise ValueError(f"no tuned timer in {evaluation}; run python -m traffic_rl.evaluate first")
-    row = rows[0]
-    return row["description"], FixedTimer(int(row["green_ns"]), int(row["green_ew"]))
 
 
 def demand_windows(demand: Demand, balance: float = 1.2) -> list[tuple[float, str]]:
