@@ -107,6 +107,53 @@ Live progress against `TASKS.md`. ✅ done · 🔄 in progress · ⛔ blocked (w
   - fixed 15/15: 14.84 ± 1.53 s
   - fixed 30/30: 17.23 ± 0.81 s
 
+### Phase 5: Evaluation and plots (safe-to-submit checkpoint)
+- ✅ `evaluate.py`:
+  - tunes the fixed timer by grid search (10–60 s, step 5, both phases) on training
+    seeds 0–9 only
+  - scores every controller on held-out seeds 1000–1009
+  - writes `results/evaluation.csv`, `plots/wait_comparison.png` and
+    `plots/learning_curve.png`
+  - picks up every model in `results/models/` automatically, so SARSA and DQN need no
+    evaluate changes
+- ✅ `utils/plotting.py`:
+  - palette checked with the dataviz skill's validator: the three agent colours pass the
+    colour-blind and normal-vision checks for every pair
+  - the third colour is under 3:1 contrast, so every bar has a direct value label
+  - baselines are grey
+- ✅ `tests/test_evaluate.py`: tuning picks the grid minimum; evaluate writes the CSV and
+  both plots. 29 tests pass.
+- ✅ Results, average wait per vehicle, mean ± std over 10 held-out seeds:
+
+  | Controller | Avg wait |
+  |---|---|
+  | Q-learning | 12.22 ± 0.51 s |
+  | Fixed 20/20, tuned on training seeds | 15.14 ± 1.41 s |
+  | Fixed 30/30, default | 17.23 ± 0.81 s |
+
+  R5 is met: Q-learning waits 19% less than the tuned timer and 29% less than the
+  default. Tuning on the training seeds picked 20/20, while 15/15 does slightly better on
+  the held-out seeds (14.84). The number is reported as-is, because tuning on the test
+  seeds would leak.
+- ✅ Tagged `v0-checkpoint`
+- ⏸ Break point
+
+### Parallel subagents (rule 14)
+Three agents ran alongside Phase 5, each in its own git worktree. Their files didn't
+overlap, so they could run at the same time.
+- **Phase 6, SARSA:** PR #4, awaiting the user's merge.
+  - `SarsaAgent` overrides only `bootstrap_value`.
+  - Held-out result: SARSA 11.43 ± 0.47 s vs Q-learning 12.22 ± 0.51 s.
+  - Each agent was trained once, so the gap may be seed noise. After the merge, retrain
+    both with 3 agent seeds before claiming SARSA is better.
+- **Phase 9 (early), MDP formulation doc:** PR #5, awaiting the user's merge. The
+  mismatches it found, fixed on `main`:
+  - `yellow_time` error message
+  - DESIGN "about 700 decisions" → at most 720
+  - DESIGN "worst case 0.44" → every window is 0.44
+  The doc still calls SARSA planned; refresh it in Phase 9.
+- **Phase 11 prep, Streamlit app** (`feat/app`): 🔄 running.
+
 ## Decision log
 
 - **Hosting:** HF Spaces' Gradio/Docker Spaces now need a paid plan; only static Spaces

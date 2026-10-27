@@ -30,9 +30,10 @@ Default demand schedule (vehicles/second per approach):
 | 2400 – 3600 | 0.06 | 0.06 | 0.16 | 0.16 |
 
 Which direction dominates changes during the episode, so no single fixed split suits all
-three windows. That is the situation adaptive control is meant for. Every window stays
-undersaturated (the worst case uses 0.16/0.5 + 0.06/0.5 = 0.44 of capacity before lost
-time), so queues stay bounded under any reasonable controller.
+three windows. That is the situation adaptive control is meant for. Every window loads
+the intersection to the same 0.44 of capacity before lost time (for example
+0.16/0.5 + 0.06/0.5 in the first window, 0.11/0.5 + 0.11/0.5 in the second), so queues
+stay bounded under any reasonable controller.
 
 ## 2. MDP
 
@@ -42,7 +43,7 @@ time), so queues stay bounded under any reasonable controller.
 | Observation | `Box(float32, shape=(6,))`: queue length per approach N, S, E, W (clipped at 40), current phase (0/1), seconds of green elapsed in the current phase (clipped at 120) |
 | Action | `Discrete(2)`: the phase to show next. Same as current means hold for 5 s. Different means 3 s yellow, then 5 s of the new green |
 | Reward | `r = −reward_scale × queue_seconds − switch_penalty × switched`, where `queue_seconds` is the sum of all queue lengths over every tick of the step. `reward_scale = 0.01`, `switch_penalty = 0.1` *(tuned)* |
-| Episode | 3600 simulated seconds (about 700 decisions). Ends with `truncated = True`; never `terminated` |
+| Episode | 3600 simulated seconds: at most 720 decisions (all holds), fewer when switching, since a switch step lasts 8 s; a 30/30 timer makes about 655. Ends with `truncated = True`; never `terminated` |
 | Info | `sim_time`, `arrivals`, `departures`, `queue_seconds`, `switched` |
 
 A switch step lasts 8 s instead of 5, so its reward already includes the queueing during

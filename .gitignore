@@ -19,9 +19,10 @@ htmlcov/
 venv/
 .env
 
-# Editors and OS
+# Editors, agent worktrees and OS
 .vscode/
 .idea/
+.claude/
 .DS_Store
 Thumbs.db
 
