@@ -5,11 +5,12 @@ from typing import Any
 import yaml
 
 from traffic_rl.agents.q_learning import Discretizer, QLearningAgent
+from traffic_rl.agents.sarsa import SarsaAgent
 from traffic_rl.envs.simple_env import SimpleEnvConfig, SimpleTrafficEnv
 from traffic_rl.episode import run_episode
 from traffic_rl.utils.logging_utils import write_rows
 
-AGENTS = {"q_learning": QLearningAgent}
+AGENTS = {"q_learning": QLearningAgent, "sarsa": SarsaAgent}
 
 
 def load_config(path: Path) -> dict[str, Any]:
