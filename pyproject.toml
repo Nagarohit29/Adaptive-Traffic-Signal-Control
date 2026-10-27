@@ -28,8 +28,8 @@ dqn = [
     "torch==2.14.1",
 ]
 sumo = [
-    "sumo-rl==1.4.5",
     "eclipse-sumo==1.28.0",
+    "traci==1.28.0",
 ]
 app = [
     "streamlit==1.66.1",
@@ -51,6 +51,10 @@ files = ["src"]
 disallow_untyped_defs = true
 warn_unused_ignores = true
 warn_redundant_casts = true
+
+[[tool.mypy.overrides]]
+module = ["traci", "sumo"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
