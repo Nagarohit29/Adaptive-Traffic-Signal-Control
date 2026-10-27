@@ -35,8 +35,10 @@ class SimpleEnvConfig:
     max_elapsed_obs: int = 120
 
     def __post_init__(self) -> None:
-        if self.episode_length <= 0 or self.decision_interval <= 0 or self.yellow_time < 0:
+        if self.episode_length <= 0 or self.decision_interval <= 0:
             raise ValueError("episode_length and decision_interval must be positive")
+        if self.yellow_time < 0:
+            raise ValueError("yellow_time must be non-negative")
         if not 0 < self.saturation_flow <= 1:
             raise ValueError("saturation_flow must be in (0, 1]")
         if not self.demand:
