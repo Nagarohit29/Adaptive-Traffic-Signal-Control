@@ -1,0 +1,37 @@
+# Local-only team references (never commit)
+TEAM_GUIDE.md
+FUTURE_WORK.md
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environments and secrets
+.venv/
+venv/
+.env
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Training outputs (final models go in results/models/ and are committed)
+results/runs/
+results/checkpoints/
+
+# SUMO outputs
+*.sumocfg.bak
+outputs/
