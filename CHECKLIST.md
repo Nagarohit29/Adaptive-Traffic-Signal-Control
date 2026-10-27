@@ -74,6 +74,38 @@ Live progress against `TASKS.md`. ✅ done · 🔄 in progress · ⛔ blocked (w
   is a fair bar.
 - Fix: the first switch-count test expected one switch per cycle; a cycle has two. The
   test was wrong, not the simulator.
+- ⛔ PR #3 (SUMO backend) is waiting for the user to merge it. The merge was denied by
+  the auto-mode permission check.
+
+### Phase 4: Q-learning
+- ✅ `agents/q_learning.py`: `Discretizer` (1536 states) and `QLearningAgent`.
+  `bootstrap_value` is the only method SARSA needs to override.
+- ✅ `run_episode` takes `greedy` and an `on_transition` callback, so training reuses the
+  same loop. It passes `(s, a, r, s', a')`, which covers SARSA too.
+- ✅ `configs/q_learning.yaml`; `train.py` CLI with checkpoints every 20 episodes and a CSV
+  metrics log
+- ✅ `tests/test_agents.py`, 10 cases:
+  - discretizer bins and rejection of unsorted edges
+  - update matches a hand calculation, including the terminal case
+  - greedy picks the argmax, exploration tries both actions, ties are broken randomly
+  - save/load round trip
+  - invalid hyperparameters rejected
+  - epsilon schedule
+  - a 2-episode training run
+- ✅ CI and the pre-push hook now also run a 5-episode smoke train
+- ✅ Full training: 400 episodes in 37 s. Average wait per training episode fell from
+  about 24 s (ε ≈ 0.9) to about 12 s (ε = 0.05).
+- Bug found and fixed: the first greedy evaluation scored 92.7 ± 240 s.
+  - On seed 1007 the policy reached states never visited in training (about two thirds
+    of the 1536 states have no updates).
+  - With all-zero Q values, `argmax` always returned action 0 (hold), so NS stayed green
+    for 483 decisions in a row and the EW queues reached 327 cars.
+  - Fix: break ties randomly. A test covers it.
+- ✅ Preliminary result on held-out seeds 1000–1009 (Phase 5 does the full tuned
+  comparison):
+  - Q-learning: 12.22 ± 0.51 s
+  - fixed 15/15: 14.84 ± 1.53 s
+  - fixed 30/30: 17.23 ± 0.81 s
 
 ## Decision log
 
