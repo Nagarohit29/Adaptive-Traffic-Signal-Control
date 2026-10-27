@@ -1,4 +1,4 @@
-# Stable-Baselines3 DQN on the scaled raw observation. See DESIGN.md section 4.
+# Stable-Baselines3 DQN on the observation scaled to [0, 1].
 # Keys under agent are passed straight to stable_baselines3.DQN (net_arch goes to policy_kwargs).
 
 env:

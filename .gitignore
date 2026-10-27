@@ -1,6 +1,11 @@
-# Local-only team references (never commit)
+# Local-only team references and planning docs (never commit)
 TEAM_GUIDE.md
 FUTURE_WORK.md
+CHECKLIST.md
+DESIGN.md
+PROJECT_PLAN.md
+TASKS.md
+docs/
 
 # Python
 __pycache__/

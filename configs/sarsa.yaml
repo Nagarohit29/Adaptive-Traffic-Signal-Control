@@ -1,4 +1,4 @@
-# Tabular SARSA. Same values as q_learning.yaml, see DESIGN.md sections 2, 4 and 5.
+# Tabular SARSA hyperparameters. Same values as q_learning.yaml so only the TD target differs.
 
 env:
   reward_scale: 0.01

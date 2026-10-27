@@ -78,10 +78,6 @@ argmax on a tie always picked "hold". Breaking ties at random fixed it, but the 
 still knows nothing about states it hasn't seen. A neural network does, which is the
 motivation for DQN.
 
-The full specification, the reasoning for each choice and the algorithm comparison are in
-[docs/mdp_formulation.md](docs/mdp_formulation.md). How the pieces fit together is in
-[docs/architecture.md](docs/architecture.md).
-
 ## Running it
 
 Python 3.11. From the repository root:
@@ -171,15 +167,13 @@ results/         committed models, evaluation table, plots and GIF
 tests/           pytest suite
 ```
 
-The scope and decisions behind the build are in [REQUIREMENTS.md](REQUIREMENTS.md),
-[DESIGN.md](DESIGN.md) and [PROJECT_PLAN.md](PROJECT_PLAN.md). Progress and the decision
-log are in [CHECKLIST.md](CHECKLIST.md).
+The requirements the build was checked against are in [REQUIREMENTS.md](REQUIREMENTS.md).
 
 ## References
 
-Libraries, papers and documentation used are listed in
-[docs/references.md](docs/references.md). The algorithms follow Sutton & Barto,
-*Reinforcement Learning: An Introduction* (2018), chapter 6, and Mnih et al. (2015) for DQN.
+The algorithms follow Sutton & Barto, *Reinforcement Learning: An Introduction* (2018),
+chapter 6, and Mnih et al. (2015) for DQN. Libraries and their pinned versions are in
+`pyproject.toml`.
 
 ## License
 
