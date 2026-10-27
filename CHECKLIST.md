@@ -56,7 +56,24 @@ Live progress against `TASKS.md`. ✅ done · 🔄 in progress · ⛔ blocked (w
   (Poisson arrivals, saturation-flow departures, yellow lost time, config validation).
   All 12 tests pass.
 - ✅ CI's no-tests tolerance removed
-- 🔄 SUMO backend attempt on `feat/sumo-env` (90-minute cap)
+- 🔄 SUMO backend attempt on `feat/sumo-env` (90-minute cap, started 19:27).
+  `pip install .[sumo]` worked in about 1 minute; SUMO_HOME resolves inside the venv
+  (`sumo.SUMO_HOME`), so there is no system install.
+
+### Phase 3: Baseline
+- ✅ `baselines/fixed_timer.py`: switches when elapsed green reaches `green_ns`/`green_ew`
+- ✅ `episode.py`: one shared episode loop plus the `Controller` protocol, reused by
+  training, evaluation and the app. `utils/logging_utils.py`: CSV writer.
+- ✅ `tests/test_baseline.py`: switch timing, invalid green times, reproducible metrics,
+  CSV round trip. 17 tests pass in total.
+- ✅ End-to-end check on seed 1000:
+  - fixed 30/30: avg wait 15.8 s, 109 switches
+  - fixed 20/20: avg wait 14.0 s
+  - fixed 40/40: avg wait 20.8 s
+  The tuned baseline will be clearly stronger than the default, so beating both (R5)
+  is a fair bar.
+- Fix: the first switch-count test expected one switch per cycle; a cycle has two. The
+  test was wrong, not the simulator.
 
 ## Decision log
 

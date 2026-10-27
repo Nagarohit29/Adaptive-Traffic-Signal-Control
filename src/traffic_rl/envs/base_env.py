@@ -8,6 +8,8 @@ from numpy.typing import NDArray
 APPROACHES = ("N", "S", "E", "W")
 GREEN_APPROACHES = np.array([[True, True, False, False], [False, False, True, True]])
 INFO_KEYS = ("sim_time", "arrivals", "departures", "queue_seconds", "switched")
+PHASE_INDEX = len(APPROACHES)
+ELAPSED_INDEX = PHASE_INDEX + 1
 
 Observation = NDArray[np.float32]
 Action = int | np.integer[Any]
@@ -25,7 +27,7 @@ def make_info(
     )
 
 
-class TrafficSignalEnv(gym.Env[Observation, np.int64]):
+class TrafficSignalEnv(gym.Env[Observation, Action]):
     def __init__(self, max_queue_obs: int, max_elapsed_obs: int) -> None:
         self.max_queue_obs = max_queue_obs
         self.max_elapsed_obs = max_elapsed_obs
