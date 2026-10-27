@@ -171,9 +171,38 @@ The requirements the build was checked against are in [REQUIREMENTS.md](REQUIREM
 
 ## References
 
-The algorithms follow Sutton & Barto, *Reinforcement Learning: An Introduction* (2018),
-chapter 6, and Mnih et al. (2015) for DQN. Libraries and their pinned versions are in
-`pyproject.toml`.
+Papers and books:
+
+- Sutton, R. S. & Barto, A. G. (2018). *Reinforcement Learning: An Introduction*, 2nd ed.
+  Chapter 6 covers Q-learning and SARSA.
+- Watkins, C. J. C. H. & Dayan, P. (1992). Q-learning. *Machine Learning*, 8(3–4),
+  279–292.
+- Rummery, G. A. & Niranjan, M. (1994). *On-line Q-learning using connectionist systems*.
+  Technical Report CUED/F-INFENG/TR 166, Cambridge University. The origin of SARSA.
+- Mnih, V. et al. (2015). Human-level control through deep reinforcement learning.
+  *Nature*, 518, 529–533. DQN, with experience replay and a target network.
+- Raffin, A. et al. (2021). Stable-Baselines3: Reliable Reinforcement Learning
+  Implementations. *JMLR*, 22(268), 1–8.
+- Lopez, P. A. et al. (2018). Microscopic Traffic Simulation using SUMO. *IEEE ITSC*.
+- Highway Capacity Manual: the 1800 vehicles per hour per lane saturation flow used as
+  the departure rate.
+
+Libraries (pinned versions in `pyproject.toml`):
+
+- [Gymnasium](https://gymnasium.farama.org/): environment API
+- [NumPy](https://numpy.org/): simulator and Q-table
+- [matplotlib](https://matplotlib.org/): plots and the demo GIF
+- [PyYAML](https://pyyaml.org/): config files
+- [Stable-Baselines3](https://stable-baselines3.readthedocs.io/) and
+  [PyTorch](https://pytorch.org/): DQN
+- [SUMO](https://eclipse.dev/sumo/) and TraCI: the optional second simulator
+- [Streamlit](https://streamlit.io/): the live demo
+- [pytest](https://pytest.org/), [ruff](https://docs.astral.sh/ruff/) and
+  [mypy](https://mypy-lang.org/): tests and static checks
+
+Platform documentation consulted when choosing where to host the demo: the Hugging Face
+Spaces overview (hardware and plan requirements) and Streamlit Community Cloud's
+"Manage your app" page (resource limits and sleep behaviour).
 
 ## License
 
