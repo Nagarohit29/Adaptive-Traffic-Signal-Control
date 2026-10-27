@@ -7,8 +7,18 @@ may change during Phase 4; when they do, the final value is written back here.
 
 **Decision:** the custom simulator (`simple_env.py`) is the primary environment and always
 exists. CI's smoke test, the deployed demo and the core install all need an environment
-with no SUMO dependency (R7, C6, C13). The SUMO backend is attempted afterwards on
-`feat/sumo-env` with the 90-minute cap, and must expose identical spaces and info keys.
+with no SUMO dependency (R7, C6, C13).
+
+**SUMO backend (`sumo_env.py`, optional `sumo` extra):**
+
+- Built from scratch: a generated 4-arm, single-lane network and Poisson-like `flow`
+  routes from the same demand schedule.
+- Drives SUMO through TraCI. It subclasses `SimpleTrafficEnv`, so the spaces, reward,
+  info keys and yellow handling are the same code.
+- Queue = halting vehicles (speed < 0.1 m/s) on each incoming lane. Absolute waits are
+  therefore lower than in the custom simulator: compare controllers within one backend.
+- Training and the demo use the custom simulator. SUMO is a realism cross-check for the
+  trained policy.
 
 Intersection model:
 

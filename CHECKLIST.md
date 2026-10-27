@@ -56,9 +56,19 @@ Live progress against `TASKS.md`. ✅ done · 🔄 in progress · ⛔ blocked (w
   (Poisson arrivals, saturation-flow departures, yellow lost time, config validation).
   All 12 tests pass.
 - ✅ CI's no-tests tolerance removed
-- 🔄 SUMO backend attempt on `feat/sumo-env` (90-minute cap, started 19:27).
-  `pip install .[sumo]` worked in about 1 minute; SUMO_HOME resolves inside the venv
-  (`sumo.SUMO_HOME`), so there is no system install.
+- ✅ SUMO backend on `feat/sumo-env`: started 19:27, working by 19:34 (7 of the 90
+  minutes).
+  - `pip install .[sumo]` took about 1 minute; SUMO_HOME resolves inside the venv, so
+    there is no system install.
+  - `sumo_env.py` generates the network and routes, then drives SUMO via TraCI as a
+    subclass of `SimpleTrafficEnv`.
+  - `tests/test_sumo_env.py` (4 tests) skips automatically when traci isn't installed,
+    as in CI.
+  - Decision: `sumo-rl` dropped for raw TraCI, to keep the same spaces and reward and
+    avoid pandas/pettingzoo (plan §10, revision 9).
+  - Cross-check on seed 1000: SUMO avg wait 7.0 / 10.2 / 12.0 s for 20/20, 30/30 and
+    40/40 timers, against 14.0 / 15.8 / 20.8 s in the custom simulator. The ordering
+    matches; absolute values differ because SUMO counts only halted vehicles.
 
 ### Phase 3: Baseline
 - ✅ `baselines/fixed_timer.py`: switches when elapsed green reaches `green_ns`/`green_ew`
