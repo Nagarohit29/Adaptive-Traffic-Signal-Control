@@ -33,3 +33,6 @@ jobs:
 
       - name: Unit tests
         run: pytest -q
+
+      - name: Smoke train
+        run: python -m traffic_rl.train --agent q_learning --episodes 5 --output "${{ runner.temp }}/smoke"
