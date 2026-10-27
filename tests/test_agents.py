@@ -5,10 +5,11 @@ import numpy as np
 import pytest
 
 from traffic_rl.agents.q_learning import Discretizer, QLearningAgent
+from traffic_rl.agents.sarsa import SarsaAgent
 from traffic_rl.envs.base_env import Observation
-from traffic_rl.train import epsilon_at, load_config, train
+from traffic_rl.train import AGENTS, epsilon_at, load_config, train
 
-CONFIG_PATH = Path(__file__).parents[1] / "configs" / "q_learning.yaml"
+CONFIG_DIR = Path(__file__).parents[1] / "configs"
 
 
 def obs(*values: float) -> Observation:
@@ -43,6 +44,22 @@ def test_update_matches_hand_calculation(discretizer: Discretizer) -> None:
 
     agent.update(state, 0, -2.0, next_state, 0, terminated=True)
     assert agent.q[discretizer(state), 0] == pytest.approx(0.5 * -2.0)
+
+
+def test_sarsa_update_bootstraps_from_next_action_not_max(discretizer: Discretizer) -> None:
+    agent = SarsaAgent(discretizer, alpha=0.5, gamma=0.9)
+    state, next_state = obs(0, 0, 0, 0, 0, 5), obs(5, 0, 0, 0, 0, 10)
+    agent.q[discretizer(next_state)] = [1.0, 3.0]
+
+    agent.update(state, 1, -2.0, next_state, 0, terminated=False)
+    assert agent.q[discretizer(state), 1] == pytest.approx(0.5 * (-2.0 + 0.9 * 1.0))
+
+    agent.update(state, 0, -2.0, next_state, 1, terminated=False)
+    assert agent.q[discretizer(state), 0] == pytest.approx(0.5 * (-2.0 + 0.9 * 3.0))
+
+    agent.update(state, 0, -2.0, next_state, 1, terminated=True)
+    expected = 0.5 * (-2.0 + 0.9 * 3.0)
+    assert agent.q[discretizer(state), 0] == pytest.approx(expected + 0.5 * (-2.0 - expected))
 
 
 def test_greedy_takes_argmax_and_exploration_tries_both(discretizer: Discretizer) -> None:
@@ -85,12 +102,15 @@ def test_epsilon_decays_linearly_then_holds() -> None:
     assert schedule == pytest.approx([1.0, 0.525, 0.05, 0.05])
 
 
-def test_train_writes_metrics_checkpoints_and_model(tmp_path: Path) -> None:
-    config = load_config(CONFIG_PATH)
+@pytest.mark.parametrize("agent_name", sorted(AGENTS))
+def test_train_writes_metrics_checkpoints_and_model(tmp_path: Path, agent_name: str) -> None:
+    config = load_config(CONFIG_DIR / f"{agent_name}.yaml")
     config["training"]["checkpoint_every"] = 1
-    model_path = train("q_learning", config, tmp_path, episodes=2)
+    model_path = train(agent_name, config, tmp_path, episodes=2)
 
-    with (tmp_path / "runs" / "q_learning" / "metrics.csv").open(newline="") as handle:
+    with (tmp_path / "runs" / agent_name / "metrics.csv").open(newline="") as handle:
         assert [row["episode"] for row in csv.DictReader(handle)] == ["0", "1"]
-    assert len(list((tmp_path / "checkpoints" / "q_learning").glob("*.npz"))) == 2
-    assert np.any(QLearningAgent.load(model_path).q != 0)
+    assert len(list((tmp_path / "checkpoints" / agent_name).glob("*.npz"))) == 2
+    loaded = AGENTS[agent_name].load(model_path)
+    assert type(loaded) is AGENTS[agent_name]
+    assert np.any(loaded.q != 0)
