@@ -5,6 +5,10 @@ seconds it decides whether to keep the current green or switch, based on the que
 see. Trained in simulation, it cuts the average wait per vehicle by 19–38% compared with
 the best fixed-time plan we could tune.
 
+**Live demo:** https://adaptive-traffic-signal-control-8x5zgibkmr432uaitwwtf7.streamlit.app.
+Set the traffic yourself and watch the trained agent and two fixed timers handle it. If
+nobody has visited in a while, the app takes a few seconds to wake up.
+
 ![Trained agent beside the tuned fixed timer](results/demo.gif)
 
 The left intersection is run by the trained Q-learning agent and the right one by the tuned
@@ -86,7 +90,7 @@ Python 3.11. From the repository root:
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
-pytest
+./scripts/check.sh                 # lint, format, types, tests, 5-episode smoke train
 ```
 
 Train, evaluate and render the GIF:
@@ -137,7 +141,9 @@ Implemented and measured:
 - an optional SUMO backend through TraCI with the same spaces and reward. On a cross-check
   it ranks fixed timers the same way as the custom simulator.
 - the demo GIF, the interactive Streamlit app and a one-command pipeline
-- CI: lint, format, type check, tests and a short smoke training run
+- `scripts/check.sh`: lint, format, type check, tests and a short smoke training run.
+  A pre-push hook and the CI workflow both run it.
+- the live Streamlit deployment, redeployed from `main` on every push
 
 Not done:
 
