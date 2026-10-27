@@ -59,5 +59,9 @@ warn_redundant_casts = true
 module = ["traci", "sumo"]
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = ["stable_baselines3", "stable_baselines3.*", "torch", "torch.*"]
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

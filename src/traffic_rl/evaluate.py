@@ -1,4 +1,5 @@
 import argparse
+import importlib.util
 from collections.abc import Sequence
 from dataclasses import asdict
 from pathlib import Path
@@ -47,6 +48,13 @@ def find_controllers(output: Path, tuned: FixedTimer) -> dict[str, tuple[str, Co
         model_path = output / "models" / f"{name}.npz"
         if model_path.exists():
             found[name] = (LABELS[name], agent_class.load(model_path))
+    if (dqn_path := output / "models" / "dqn.zip").exists():
+        if importlib.util.find_spec("stable_baselines3") is None:
+            print("skipping DQN: stable-baselines3 is not installed (pip install -e .[dqn])")
+        else:
+            from traffic_rl.agents.dqn import DQNController
+
+            found["dqn"] = (LABELS["dqn"], DQNController.load(dqn_path))
     return found
 
 
@@ -75,7 +83,7 @@ def evaluate(
     plot_comparison(rows, plots / "wait_comparison.png")
     curves = {
         name: read_column(metrics_path, "avg_wait")
-        for name in AGENTS
+        for name in [*AGENTS, "dqn"]
         if (metrics_path := output / "runs" / name / "metrics.csv").exists()
     }
     if curves:

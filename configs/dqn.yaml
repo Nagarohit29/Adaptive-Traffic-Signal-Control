@@ -1,0 +1,22 @@
+# Stable-Baselines3 DQN on the scaled raw observation. See DESIGN.md section 4.
+# Keys under agent are passed straight to stable_baselines3.DQN (net_arch goes to policy_kwargs).
+
+env:
+  reward_scale: 0.01
+  switch_penalty: 0.1
+
+agent:
+  learning_rate: 0.0005
+  buffer_size: 50000
+  learning_starts: 1000
+  batch_size: 64
+  gamma: 0.99
+  train_freq: 4
+  target_update_interval: 2000
+  exploration_fraction: 0.3
+  exploration_final_eps: 0.05
+  net_arch: [64, 64]
+
+training:
+  episodes: 400
+  seed: 0
