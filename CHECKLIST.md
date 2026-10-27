@@ -152,7 +152,25 @@ overlap, so they could run at the same time.
   - DESIGN "about 700 decisions" → at most 720
   - DESIGN "worst case 0.44" → every window is 0.44
   The doc still calls SARSA planned; refresh it in Phase 9.
-- **Phase 11 prep, Streamlit app** (`feat/app`): 🔄 running.
+- **Phase 11 prep, Streamlit app:** PR #6, awaiting the user's merge. A local launch
+  returned a healthy status. Follow-up: `docs/architecture.md` should say the app
+  installs pinned streamlit, gymnasium and numpy and loads the package from `src/`.
+- All four PRs (#3–#6) test-merged onto `main` together: no conflicts, 36 tests pass.
+  The user is merging them on GitHub.
+
+### Phase 8: Demo polish
+- ✅ `demo.py` and `render_demo_gif` in `utils/plotting.py`. The GIF shows the trained
+  agent and the tuned fixed timer side by side on held-out seed 1000:
+  - top: queues drawn as cars, plus green/red lights and live counts
+  - bottom: a shared "vehicles waiting" timeline labelled with the three demand windows
+- ✅ `evaluate.py` now writes the tuned timer's green times to `evaluation.csv`, so the
+  demo reuses the same baseline instead of re-tuning. `write_rows` handles rows with
+  different keys.
+- ✅ `tests/test_demo.py`: the trace matches the episode, the tuned timer is read back
+  from the CSV, demand windows are labelled, and the frame count is right. 33 tests pass.
+- ✅ `results/demo.gif`: 240 frames at 640×464, 2.5 MB. Frames at minutes 20 and 60
+  inspected by eye.
+- ⏸ Break point
 
 ## Decision log
 
