@@ -10,6 +10,8 @@ External resources this project draws on. Updated as each one is used.
 - [PyYAML](https://pyyaml.org/): config files
 - [pytest](https://pytest.org/), [ruff](https://docs.astral.sh/ruff/), [mypy](https://mypy-lang.org/): testing and static checks
 - [Streamlit](https://streamlit.io/): deployed demo
+- [SUMO](https://eclipse.dev/sumo/) and TraCI: optional microscopic simulation backend.
+  Lopez, P. A. et al. (2018). *Microscopic Traffic Simulation using SUMO*. IEEE ITSC.
 
 ## Background
 

@@ -500,7 +500,7 @@ text above.
    not optional. The 90-minute SUMO attempt runs afterwards on `feat/sumo-env` as a second
    backend. SUMO is now pip-installable (`eclipse-sumo`), which lowers that risk.
 3. **Dependencies live in `pyproject.toml`, pinned, with optional extras** `dev`, `dqn`
-   (stable-baselines3 + torch), `sumo` (sumo-rl + eclipse-sumo), `app` (streamlit). The
+   (stable-baselines3 + torch), `sumo` (eclipse-sumo + traci), `app` (streamlit). The
    default Linux torch wheel pulls several GB of CUDA libraries, too heavy for CI and for
    Streamlit Cloud's ~2.7 GB RAM tier. DQN/SUMO code imports these lazily.
 4. **Default branch is `main`** (the local unborn branch was `master`).
@@ -513,3 +513,9 @@ text above.
    example file if a secret ever appears.
 8. **Rule 10 (no code comments) wins over any tooling habit** of marking shortcuts in code;
    deliberate shortcuts are recorded in `CHECKLIST.md` instead.
+9. **SUMO backend uses TraCI directly, not `sumo-rl`** (2026-10-27). `sumo-rl` brings its
+   own observation, reward and phase scheme and pulls in pandas and pettingzoo. Driving
+   SUMO through TraCI from a subclass of `SimpleTrafficEnv` keeps the spaces, info keys,
+   reward and yellow handling identical, so the agents can't tell the backends apart.
+   SUMO measures queues as halting vehicles, so absolute wait times differ between
+   backends: compare controllers within one backend only.
