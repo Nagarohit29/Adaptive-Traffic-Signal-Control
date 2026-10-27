@@ -37,6 +37,26 @@ Live progress against `TASKS.md`. ✅ done · 🔄 in progress · ⛔ blocked (w
 - ⛔ Dependabot PRs #1 (actions/checkout 4→7) and #2 (actions/setup-python 5→7) are on
   hold. They can't be verified until CI runs.
 - ⏸ Break point after the Phase 1 push
+- 🔄 CI blocker: a re-run on 2026-10-27 still showed the account lock. The account is on
+  the free plan and the billing usage API shows $0 owed, so the cause is on the account
+  side (payment method or verification). Only the account owner can clear it at
+  github.com/settings/billing. Workaround: a local `.git/hooks/pre-push` (not committed)
+  runs ruff, the format check, mypy and pytest, and blocks any push that fails.
+
+### Phase 2: Environment
+- ✅ `tests/test_env.py` written first. 12 tests cover:
+  - Gymnasium `check_env`, and the reset state
+  - truncation at 3600 s (720 hold steps)
+  - same seed gives the same trajectory
+  - vehicle conservation
+  - 3 s yellow with no departures
+  - reward formula
+  - invalid action and invalid demand rejected
+- ✅ `base_env.py` (shared spaces, observation builder, info keys) and `simple_env.py`
+  (Poisson arrivals, saturation-flow departures, yellow lost time, config validation).
+  All 12 tests pass.
+- ✅ CI's no-tests tolerance removed
+- 🔄 SUMO backend attempt on `feat/sumo-env` (90-minute cap)
 
 ## Decision log
 
