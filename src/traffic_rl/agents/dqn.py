@@ -78,5 +78,6 @@ def train_dqn(config: dict[str, Any], output: Path, episodes: int | None = None)
     model.learn(episodes * max_steps, callback=StopTrainingOnMaxEpisodes(episodes))
     write_rows(output / "runs" / "dqn" / "metrics.csv", env.rows)
     model_path = output / "models" / "dqn.zip"
+    model_path.parent.mkdir(parents=True, exist_ok=True)
     model.save(model_path)
     return model_path
