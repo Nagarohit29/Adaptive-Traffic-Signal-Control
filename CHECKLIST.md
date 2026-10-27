@@ -29,6 +29,13 @@ Live progress against `TASKS.md`. ✅ done · 🔄 in progress · ⛔ blocked (w
 - ✅ `TEAM_GUIDE.md` and `FUTURE_WORK.md` created; git-ignored, verified with `git check-ignore`
 - Note: CI tolerates pytest exit code 5 (no tests collected) until Phase 2 adds tests.
   That tolerance is removed in Phase 2.
+- ✅ Pushed to `main` as `12e7bd1`
+- ⛔ GitHub Actions blocked: no CI job starts ("account is locked due to a billing
+  issue"). This is not a code failure, since the same checks pass locally. Needs the
+  account owner to fix billing. Until then, the local ruff, mypy and pytest run is the
+  gate before every push (rule 4).
+- ⛔ Dependabot PRs #1 (actions/checkout 4→7) and #2 (actions/setup-python 5→7) are on
+  hold. They can't be verified until CI runs.
 - ⏸ Break point after the Phase 1 push
 
 ## Decision log
