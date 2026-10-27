@@ -12,7 +12,8 @@ def write_rows(path: Path, rows: Sequence[Mapping[str, object]]) -> None:
     if not rows:
         raise ValueError("no rows to write")
     path.parent.mkdir(parents=True, exist_ok=True)
+    fieldnames = list(dict.fromkeys(key for row in rows for key in row))
     with path.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)

@@ -1,5 +1,6 @@
 import argparse
 from collections.abc import Sequence
+from dataclasses import asdict
 from pathlib import Path
 
 import numpy as np
@@ -59,7 +60,12 @@ def evaluate(
     env = SimpleTrafficEnv(env_config)
     tuned = tune_fixed_timer(env, grid, train_seeds)
     rows: list[Row] = [
-        {"controller": name, "description": description, **summarize(env, controller, eval_seeds)}
+        {
+            "controller": name,
+            "description": description,
+            **(asdict(controller) if isinstance(controller, FixedTimer) else {}),
+            **summarize(env, controller, eval_seeds),
+        }
         for name, (description, controller) in find_controllers(output, tuned).items()
     ]
     write_rows(output / "evaluation.csv", rows)
